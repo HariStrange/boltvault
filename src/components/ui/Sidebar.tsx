@@ -9,7 +9,8 @@ import {
   Menu,
   X,
   Truck,
-  Upload, // ✅ new icon for Passport Upload
+  TicketsPlane,
+  BookOpenCheck, // Icon for Quizz
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -30,25 +31,31 @@ const navItems: NavItem[] = [
   },
   {
     title: "Users",
-    href: "/users",
+    href: "/dashboard/users",
     icon: Users,
     roles: ["admin"],
   },
   {
     title: "Reports",
-    href: "/reports",
+    href: "/dashboard/reports",
     icon: FileText,
     roles: ["admin", "driver", "welder"],
   },
   {
-    title: "Passport Upload", // ✅ new
+    title: "Passport Details",
     href: "/dashboard/passport-upload",
-    icon: Upload,
-    roles: ["admin", "driver", "welder", "student"], // allow all roles
+    icon: TicketsPlane,
+    roles: ["driver", "welder", "student"],
+  },
+  {
+    title: "Quizz Management",
+    href: "/dashboard/quizz",
+    icon: BookOpenCheck,
+    roles: ["admin"],
   },
   {
     title: "Settings",
-    href: "/settings",
+    href: "/dashboard/settings",
     icon: Settings,
     roles: ["admin", "driver", "welder", "student"],
   },
@@ -64,14 +71,15 @@ export default function Sidebar() {
   );
 
   const isActive = (href: string) => {
+    // ✅ Cleaned up: Comprehensive check for all /dashboard/* subpaths under "Dashboard" nav
     if (href === "/dashboard") {
-      return (
-        location.pathname === "/dashboard" ||
-        location.pathname.startsWith("/dashboard/admin") ||
-        location.pathname.startsWith("/dashboard/driver") ||
-        location.pathname.startsWith("/dashboard/welder") ||
-        location.pathname.startsWith("/dashboard/student")
-      );
+      return location.pathname.startsWith("/dashboard") && ![
+        "/dashboard/users",
+        "/dashboard/reports",
+        "/dashboard/passport-upload",
+        "/dashboard/quizz",
+        "/dashboard/settings"
+      ].some(sub => location.pathname.startsWith(sub));
     }
     return location.pathname.startsWith(href);
   };
@@ -102,7 +110,9 @@ export default function Sidebar() {
                 <Truck className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h2 className="font-bold text-lg text-foreground">Drive Vault</h2>
+                <h2 className="font-bold text-lg text-foreground">
+                  Drive Vault
+                </h2>
                 <p className="text-xs text-muted-foreground capitalize">
                   {user?.role}
                 </p>

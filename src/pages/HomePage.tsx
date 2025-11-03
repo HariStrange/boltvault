@@ -1,8 +1,8 @@
-import { Link, Navigate } from 'react-router-dom';
-import { Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { useAuth } from '@/contexts/AuthContext';
+import { Link, Navigate } from "react-router-dom";
+import { Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function HomePage() {
   const { token, user, isLoading } = useAuth();
@@ -17,13 +17,13 @@ export default function HomePage() {
 
   if (token && user) {
     switch (user.role) {
-      case 'admin':
+      case "admin":
         return <Navigate to="/dashboard/admin" replace />;
-      case 'driver':
+      case "driver":
         return <Navigate to="/dashboard/driver" replace />;
-      case 'welder':
+      case "welder":
         return <Navigate to="/dashboard/welder" replace />;
-      case 'student':
+      case "student":
         return <Navigate to="/dashboard/student" replace />;
       default:
         return <Navigate to="/dashboard" replace />;

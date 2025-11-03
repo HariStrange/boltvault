@@ -1,3 +1,4 @@
+// AuthContext.tsx (unchanged except import path if needed)
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '@/lib/api';
