@@ -42,6 +42,12 @@ const navItems: NavItem[] = [
     roles: ["admin", "driver", "welder"],
   },
   {
+    title: "Examinations",
+    href: "/dashboard/quizz/examination", // ✅ Fixed: Points to the examination list page (not the dynamic attend route)
+    icon: BookOpenCheck, // ✅ Updated: More relevant icon for exams
+    roles: ["student", "driver", "welder"],
+  },
+  {
     title: "Passport Details",
     href: "/dashboard/passport-upload",
     icon: TicketsPlane,
@@ -71,16 +77,24 @@ export default function Sidebar() {
   );
 
   const isActive = (href: string) => {
-    // ✅ Cleaned up: Comprehensive check for all /dashboard/* subpaths under "Dashboard" nav
+    // ✅ Enhanced: Handles exact matches and sub-routes for all items
     if (href === "/dashboard") {
-      return location.pathname.startsWith("/dashboard") && ![
-        "/dashboard/users",
-        "/dashboard/reports",
-        "/dashboard/passport-upload",
-        "/dashboard/quizz",
-        "/dashboard/settings"
-      ].some(sub => location.pathname.startsWith(sub));
+      return (
+        location.pathname.startsWith("/dashboard") &&
+        ![
+          "/dashboard/users",
+          "/dashboard/reports",
+          "/dashboard/passport-upload",
+          "/dashboard/quizz",
+          "/dashboard/settings",
+        ].some((sub) => location.pathname.startsWith(sub))
+      );
     }
+    // For sub-routes like /dashboard/quizz/* (covers /quizz, /quizz/examination, /quizz/attend/:setId)
+    if (href.startsWith("/dashboard/quizz")) {
+      return location.pathname.startsWith("/dashboard/quizz");
+    }
+    // Generic sub-route check for others
     return location.pathname.startsWith(href);
   };
 

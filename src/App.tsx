@@ -22,6 +22,8 @@ import PassportUploadPage from "@/pages/passport/PassportUploadPage";
 import QuizzManagementPage from "@/pages/Quizz/quizzAdminPage"; // Dedicated for quizz (or keep using AdminDashboard)
 // import SettingsPage from "@/pages/SettingsPage"; // e.g., <div>Settings</div>
 import QuestionSetBuilder from "./pages/Quizz/questionSetBuilder";
+import AttendQuiz from "./pages/Quizz/attendQuizz";
+import ExaminationPage from "./pages/Quizz/ExaminationPage";
 function DashboardRedirect() {
   const { user } = useAuth();
 
@@ -112,21 +114,42 @@ function AppRoutes() {
               <ReportsPage />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="settings"
           element={
             <ProtectedRoute allowedRoles={["admin", "driver", "welder", "student"]}>
-              <SettingsPage />
+              {/* <SettingsPage /> */}
+              <div>Settings Page Placeholder</div> {/* ✅ Temporary: Replace with real component */}
             </ProtectedRoute>
           }
-        /> */}
+        />
         <Route
           path="quizz"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <QuizzManagementPage />{" "}
               {/* ✅ Swapped to dedicated component for clarity */}
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ Fixed: Full path for examination list (matches sidebar href) */}
+        <Route
+          path="quizz/examination"
+          element={
+            <ProtectedRoute allowedRoles={["driver", "student", "welder"]}>
+              <ExaminationPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ Fixed: Param consistency (:setId matches useParams<{ setId: string }> in AttendQuiz) */}
+        <Route
+          path="quizz/attend/:setId"  
+          element={
+            <ProtectedRoute allowedRoles={["driver", "student", "welder"]}>
+              <AttendQuiz />
             </ProtectedRoute>
           }
         />

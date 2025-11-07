@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import api from "../../lib/api"; // Assuming this is the API client path; adjust if needed
+import QuestionEditModal from "./QuestionEditModal";
 
 interface QuestionSet {
   id: number;
@@ -44,6 +45,7 @@ const QuestionSetsList: React.FC<QuestionSetsListProps> = ({
   const [selectedSetId, setSelectedSetId] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
 
   const refreshList = async () => {
     setIsLoading(true);
@@ -81,7 +83,9 @@ const QuestionSetsList: React.FC<QuestionSetsListProps> = ({
               backToList();
             }
           } catch (err: any) {
-            toast.error(err.response?.data?.error || "Failed to delete question set");
+            toast.error(
+              err.response?.data?.error || "Failed to delete question set"
+            );
           }
         },
       },
@@ -89,6 +93,27 @@ const QuestionSetsList: React.FC<QuestionSetsListProps> = ({
         label: "Cancel",
       },
     });
+  };
+
+  const deleteQuestion = async (id: number) => {
+    toast("Delete this question?", {
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          try {
+            await api.delete(`/api/quizz/question/${id}`);
+            toast.success("Question deleted");
+            viewQuestions(selectedSetId!);
+          } catch (err: any) {
+            toast.error(err.response?.data?.error || "Failed");
+          }
+        },
+      },
+      cancel: { label: "Cancel" },
+    });
+  };
+  const startEditing = (q: Question) => {
+    setEditingQuestion(q);
   };
 
   const backToList = () => {
@@ -146,6 +171,22 @@ const QuestionSetsList: React.FC<QuestionSetsListProps> = ({
                       {question.question_text}
                     </p>
                   )}
+                  <div className="flex justify-end gap-3 mb-3">
+                    <button
+                      className="px-3 py-1 rounded bg-destructive text-white text-xs"
+                      onClick={() => deleteQuestion(question.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      className="px-3 py-1 rounded bg-primary text-white text-xs"
+                      onClick={() => startEditing(question)}
+                    >
+                      Edit
+                    </button>
+                  </div>
+
                   {question.question_image_url && (
                     <img
                       src={`http://localhost:3000/uploads/quizzes/${question.question_image_url}`}
@@ -154,6 +195,16 @@ const QuestionSetsList: React.FC<QuestionSetsListProps> = ({
                     />
                   )}
                 </div>
+                {editingQuestion && (
+                  <QuestionEditModal
+                    question={editingQuestion}
+                    onClose={() => setEditingQuestion(null)}
+                    onSaved={() => {
+                      setEditingQuestion(null);
+                      viewQuestions(selectedSetId!);
+                    }}
+                  />
+                )}
                 {question.options && question.options.length > 0 ? (
                   <ul className="space-y-2">
                     {question.options.map((option) => (
